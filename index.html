@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luke and Bahka's Math Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #question {
+      font-size: 2em;
+      margin-top: 30px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 1.5em;
+    }
+    button {
+      font-size: 1.5em;
+      margin: 10px;
+    }
+    #answer {
+      font-size: 1.5em;
+      margin-top: 20px;
+    }
+    #luke-image {
+      margin-top: 20px;
+      max-width: 25%;
+      height: auto;
+    }
+  </style>
+  <audio id="correct-sound" src="538147__fupicat__correct-bell.wav"></audio>
+</head>
+<body>
+  <h1>Luke and Bahka's Math Game</h1>
+  <img id="luke-image" src="IMG_1980.jpg" alt="Luke and Grandfather playing" style="display: block; margin: 0 auto;">
+  <div id="question"></div>
+  <input type="number" id="answer" placeholder="Your answer here" onkeydown="handleKeyPress(event)">
+  <button onclick="checkAnswer()">Check Answer</button>
+  <div id="result"></div>
+
+  <script>
+    let currentQuestion = {};
+
+    function generateQuestion() {
+      let num1, num2, operator;
+      do {
+        num1 = Math.floor(Math.random() * 10) + 1;
+        num2 = Math.floor(Math.random() * 10) + 1;
+        operator = Math.random() < 0.5 ? '+' : '-';
+      } while (operator === '-' && num1 - num2 < 0);
+
+      currentQuestion = {
+        num1: num1,
+        num2: num2,
+        operator: operator,
+        answer: operator === '+' ? num1 + num2 : num1 - num2
+      };
+
+      document.getElementById('question').textContent = `${num1} ${operator} ${num2} = ?`;
+      document.getElementById('answer').value = '';
+      document.getElementById('result').textContent = '';
+    }
+
+    function checkAnswer() {
+      const correctSound = document.getElementById('correct-sound');
+      const userAnswer = parseInt(document.getElementById('answer').value);
+
+      if (userAnswer === currentQuestion.answer) {
+        document.getElementById('result').textContent = `Yes! Good job, Luke!`;
+        correctSound.play();
+        runImageAnimation();
+        setTimeout(() => {
+          generateQuestion();
+        }, 2000);
+      } else {
+        document.getElementById('result').textContent = `Oops! The answer is ${currentQuestion.answer}.`;
+      }
+    }
+
+    function runImageAnimation() {
+      const lukeImage = document.getElementById('luke-image');
+      const originalSrc = lukeImage.src;
+      lukeImage.src = 'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmR4N3k4b2hwNGdvdWplZWM1bTV6cWg2cHNyMnI0bnRjeXcycjVtZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/mc4W9sigqDKXm/giphy.gif';
+
+      setTimeout(() => {
+        lukeImage.src = originalSrc;
+      }, 2000);
+    }
+
+    window.onload = generateQuestion;
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        checkAnswer();
+      }
+    }
+  </script>
+
+</body>
+</html>
